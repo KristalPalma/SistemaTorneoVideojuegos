@@ -2,6 +2,7 @@
 import { Gamepad2, User, Mail, CalendarDays } from 'lucide-react'
 import { createPlayer, validatePlayer } from './registroplayer.js'
 import './App.css'
+import RegistroVideojuego from './RegistroVideojuego.jsx'
 
 
 const emptyForm = {
@@ -11,6 +12,9 @@ const emptyForm = {
 }
 
 function App() {
+  // Solo cambio la pantalla visible; los datos siguen en memoria.
+  const [screen, setScreen] = useState('players')
+  const [games, setGames] = useState([])
 
   const [form, setForm] = useState(emptyForm)
   const [players, setPlayers] = useState([])
@@ -123,12 +127,22 @@ function App() {
 
         <nav aria-label="Navegación principal">
           <a
-            className="nav-item active"
+            className={`nav-item ${screen === 'players' ? 'active' : ''}`}
             href="#registro"
-            aria-current="page"
+            onClick={() => setScreen('players')}
+            aria-current={screen === 'players' ? 'page' : undefined}
           >
             <User size={20} />
             Registro jugadores
+          </a>
+          <a
+            className={`nav-item ${screen === 'games' ? 'active' : ''}`}
+            href="#videojuegos"
+            onClick={() => setScreen('games')}
+            aria-current={screen === 'games' ? 'page' : undefined}
+          >
+            <Gamepad2 size={20} />
+            Videojuegos
           </a>
         </nav>
 
@@ -136,7 +150,7 @@ function App() {
 
       <div className="workspace">
 
-        <main id="registro">
+        <main id="registro" hidden={screen !== 'players'}>
 
           <div className="breadcrumb">
             Jugadores <span>/</span> <strong>Registro</strong>
@@ -315,6 +329,10 @@ function App() {
 
           </section>
 
+        </main>
+
+        <main id="videojuegos" hidden={screen !== 'games'}>
+          <RegistroVideojuego games={games} setGames={setGames} />
         </main>
 
         <footer>
