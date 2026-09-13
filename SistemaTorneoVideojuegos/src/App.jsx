@@ -1,121 +1,332 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+﻿import { useState } from 'react'
+import { Gamepad2, User, Mail, CalendarDays } from 'lucide-react'
+import { createPlayer, validatePlayer } from './registroplayer.js'
 import './App.css'
 
+
+const emptyForm = {
+  name: '',
+  gamertag: '',
+  email: '',
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [form, setForm] = useState(emptyForm)
+  const [players, setPlayers] = useState([])
+  const [errors, setErrors] = useState({})
+  const [notice, setNotice] = useState(null)
+
+  function updateField(event) {
+    const { name, value } = event.target
+
+    // actualiza solamente el campo que se esta escribiendo.
+    setForm(current => ({
+      ...current,
+      [name]: value,
+    }))
+
+    // quita el error del campo mientras se corrige.
+    setErrors(current => ({
+      ...current,
+      [name]: undefined,
+    }))
+
+    setNotice(null)
+  }
+
+  function registerPlayer(event) {
+    event.preventDefault()
+
+    const validation = validatePlayer(form, players)
+
+    setErrors(validation)
+
+    // Si hay errores, no registra al jugador
+    if (Object.keys(validation).length) {
+      setNotice({
+        type: 'error',
+        message:
+          'No se pudo registrar al jugador. Revisa los campos indicados.',
+      })
+
+      // Esto coloca el cursor en el primer campo en el q dio error
+      document
+        .getElementById(Object.keys(validation)[0])
+        ?.focus()
+
+      return
+    }
+
+    try {
+      const player = createPlayer(form)
+
+      // agrega el nuevo jugador a la lista.
+      setPlayers(current => [...current, player])
+
+      setForm(emptyForm)
+
+      setNotice({
+        type: 'success',
+        message: `¡Jugador registrado! ${player.gamertag} ya forma parte de TORNEO GAMING :)`,
+        player,
+      })
+    } catch {
+      setNotice({
+        type: 'error',
+        message:
+          'No se pudo guardar el jugador. Intenta de nuevo.',
+      })
+    }
+  }
+
+  
+  const fields = [
+    {
+      name: 'name',
+      label: 'Nombre',
+      placeholder: 'Ej. Ana Torres',
+      icon: User,
+      autoComplete: 'name',
+      type: 'text',
+    },
+    {
+      name: 'gamertag',
+      label: 'Gamertag / Alias',
+      placeholder: 'Ej. MonitaGamer',
+      icon: Gamepad2,
+      autoComplete: 'off',
+      type: 'text',
+    },
+    {
+      name: 'email',
+      label: 'Correo electrónico',
+      placeholder: 'Ej. ana@email.com',
+      icon: Mail,
+      autoComplete: 'email',
+      type: 'email',
+    },
+  ]
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app-shell">
+      <aside className="sidebar">
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div className="brand">
+          <Gamepad2 size={20} />
+          <span>TORNEO GAMING</span>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+        <div className="nav-label">
+          TORNEO DE VIDEOJUEGOS :D
+        </div>
+
+        <nav aria-label="Navegación principal">
+          <a
+            className="nav-item active"
+            href="#registro"
+            aria-current="page"
+          >
+            <User size={20} />
+            Registro jugadores
+          </a>
+        </nav>
+
+      </aside>
+
+      <div className="workspace">
+
+        <main id="registro">
+
+          <div className="breadcrumb">
+            Jugadores <span>/</span> <strong>Registro</strong>
+          </div>
+
+          <div className="page-heading">
+            <div>
+              <h1>Registrar jugador</h1>
+              <p>Completa la información del nuevo jugador.</p>
+            </div>
+          </div>
+
+          <section
+            className="registration-card"
+            aria-labelledby="form-title"
+          >
+
+            <div className="card-heading">
+
+              <span className="card-icon">
+                <User size={20} />
+              </span>
+
+              <div>
+                <h2 id="form-title">
+                  Información del jugador
+                </h2>
+
+                <p>
+                  Los campos con{' '}
+                  <span className="required">*</span>{' '}
+                  son obligatorios.
+                </p>
+              </div>
+
+            </div>
+            {/*FORMULARIO*/}
+            <form onSubmit={registerPlayer} noValidate>
+
+              {fields.map(field => {
+                const FieldIcon = field.icon
+
+                return (
+                  <div
+                    className="field"
+                    key={field.name}
+                  >
+
+                    <label htmlFor={field.name}>
+                      {field.label}{' '}
+                      <span className="required">*</span>
+                    </label>
+
+                    <div
+                      className={`input-wrap ${
+                        errors[field.name] ? 'invalid' : ''
+                      }`}
+                    >
+
+                      <FieldIcon size={20} />
+
+                      <input
+                        id={field.name}
+                        name={field.name}
+                        type={field.type}
+                        autoComplete={field.autoComplete}
+                        placeholder={field.placeholder}
+                        value={form[field.name]}
+                        onChange={updateField}
+                        required
+                        aria-invalid={Boolean(
+                          errors[field.name]
+                        )}
+                        aria-describedby={
+                          errors[field.name]
+                            ? `${field.name}-error`
+                            : undefined
+                        }
+                      />
+
+                    </div>
+
+                    {errors[field.name] && (
+                      <p
+                        className="field-error"
+                        id={`${field.name}-error`}
+                      >
+                        {errors[field.name]}
+                      </p>
+                    )}
+
+                  </div>
+                )
+              })}
+
+              <div className="field">
+
+                <label htmlFor="registered-at">
+                  Fecha de registro
+                </label>
+
+                <div className="input-wrap readonly">
+
+                  <CalendarDays size={20} />
+
+                  <input
+                    id="registered-at"
+                    value={new Date().toLocaleDateString(
+                      'es-MX',
+                      {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                      }
+                    )}
+                    readOnly
+                    aria-describedby="date-help"
+                  />
+
+                  <span className="automatic">
+                    Automática
+                  </span>
+
+                </div>
+
+                <p
+                  className="field-hint"
+                  id="date-help"
+                >
+                  Se asigna al guardar el jugador.
+                </p>
+
+              </div>
+
+              
+              {notice && (
+                <div
+                  className={`notice ${notice.type}`}
+                  role={
+                    notice.type === 'error'
+                      ? 'alert'
+                      : 'status'
+                  }
+                >
+
+                  <strong>
+                    {notice.message}
+                  </strong>
+
+                  {notice.player && (
+                    <>
+                      <span>
+                        ID: {notice.player.id}
+                      </span>
+
+                      <span>
+                        Fecha de registro:{' '}
+                        {new Date(
+                          notice.player.registeredAt
+                        ).toLocaleString('es-MX')}
+                      </span>
+                    </>
+                  )}
+
+                </div>
+              )}
+
+              <button
+                className="save-button"
+                type="submit"
+              >
+                Guardar jugador
+              </button>
+
+            </form>
+
+          </section>
+
+        </main>
+
+        <footer>
+          TORNEO GAMING
+          <span>
+            Sistema de torneo de videojuegos
+          </span>
+        </footer>
+
+      </div>
+
+    </div>
   )
 }
 
