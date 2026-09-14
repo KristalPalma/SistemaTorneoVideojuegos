@@ -6,6 +6,7 @@ import { useSession } from './auth/useSession'
 import { dashboardPath, navigationFor, resolveRoute } from './auth/routes'
 import { navigate, useHashPath } from './auth/navigation'
 import Redirect from './auth/Redirect'
+import RegistroJugador from './jugadores/RegistroJugador'
 
 function App() {
   const { user, login, logout } = useSession()
@@ -51,6 +52,7 @@ function App() {
             <h1>Página no encontrada</h1><p>La dirección solicitada no existe.</p>
             <a className="back-link" href={`#${dashboardPath(user)}`}>Volver al inicio →</a>
           </section> : route.login ? <Login onLogin={handleLogin} /> : route.home ? <Home /> :
+            route.path === '/admin/jugadores' ? <RegistroJugador /> :
             <section className="module-panel" aria-labelledby="page-title">
               <p className="eyebrow">{route.role ? 'PANEL DE ADMINISTRACIÓN' : 'TORNEO GAMER'}</p>
               <h1 id="page-title">{route.title || route.label}</h1>

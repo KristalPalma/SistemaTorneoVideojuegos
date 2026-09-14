@@ -1,0 +1,15 @@
+.player-registration { max-width: 700px; margin: 0 auto; }
+.player-registration form { display: flex; flex-direction: column; gap: 10px; margin-top: 28px; }
+.player-registration label { font-size: 13px; margin-top: 8px; }
+.player-registration input {
+  width: 100%; padding: 12px; font: inherit; font-size: 14px;
+  color: #f4f3fa; background: #151f2c; border: 1px solid #303c50; border-radius: 6px;
+}
+.player-registration input[aria-invalid="true"] { border-color: #e17f97; }
+.player-registration .player-field-error { color: #ffb7c5; font-size: 13px; }
+.player-registration .player-help { color: #a5a7b7; font-size: 12px; line-height: 1.6; }
+.player-registration .player-success {
+  background: #143128; border: 1px solid #39705b; border-radius: 6px;
+  padding: 12px; color: #b1ecd2; font-size: 13px; line-height: 1.8; overflow-wrap: anywhere;
+}
+.player-registration button:disabled { opacity: .65; cursor: wait; }
