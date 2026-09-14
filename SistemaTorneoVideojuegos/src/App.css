@@ -1,0 +1,83 @@
+﻿.app {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(ellipse at 85% 35%, #381c571c, transparent 55%);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  min-height: 85px;
+  padding: 0 6%;
+  background: #070a10;
+  border-bottom: 1px solid #202635;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; font-size: 23px; font-weight: 800; letter-spacing: .03em; }
+.brand svg { width: 39px; height: 32px; stroke: #aa7cff; stroke-width: 2.5; stroke-linecap: round; }
+.navigation { display: flex; align-self: stretch; align-items: center; gap: 28px; }
+.navigation a, .navigation button { position: relative; padding: 14px 0; font-size: 13px; }
+.navigation button { border: 0; background: transparent; color: #687181; }
+.navigation .active { color: #c7adff; }
+.navigation .active::after { content: ''; position: absolute; bottom: 3px; left: 0; right: 0; height: 2px; background: #995bff; }
+.login-button { padding: 11px 19px; border: 1px solid #573390; border-radius: 6px; background: #42237a; color: #bca7dd; font-size: 12px; }
+
+main { width: min(1180px, 88%); margin: 58px auto; flex: 1; }
+.welcome {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: center;
+  min-height: 425px;
+  overflow: hidden;
+  border: 1px solid #282336;
+  border-radius: 12px;
+  background: radial-gradient(ellipse at 90% 65%, #50238d33, transparent 60%), #090d15;
+}
+.welcome-content { padding: 55px 0 55px 48px; }
+.eyebrow { font-size: 17px; font-weight: 500; }
+h1 { margin: 5px 0 9px; font-size: clamp(50px, 6.5vw, 82px); line-height: 1.1; font-weight: 850; letter-spacing: .025em; }
+.subtitle { color: #c5bed5; font-size: 10px; letter-spacing: 3px; line-height: 1.8; }
+.accent-line { width: 44px; height: 3px; margin: 29px 0 22px; background: #8e4fff; border-radius: 3px; }
+.description { color: #a5a7b7; font-size: 14px; line-height: 1.9; }
+.welcome-art { min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; background: radial-gradient(ellipse, #7434cd21, transparent 67%); }
+.gamepad { width: 76%; max-width: 310px; transform: rotate(-15deg); filter: drop-shadow(0 12px 28px #783bdb30); }
+.gamepad-body { fill: #151025; stroke: #8954d5; stroke-width: 3; }
+.gamepad-detail { stroke: #a779ed; stroke-width: 7; stroke-linecap: round; }
+.gamepad-button { fill: #8e57df; }
+.gamepad-stick { fill: #0c0b14; stroke: #5a3b85; stroke-width: 4; }
+.welcome-art span { color: #947cad; font-size: 9px; letter-spacing: 2.5px; }
+
+.intro { display: flex; align-items: center; gap: 20px; padding: 27px 30px; margin-top: 22px; background: #0c121b; border: 1px solid #202936; border-radius: 10px; }
+.intro-mark { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 10px; color: #b386f9; background: #7f43ce1c; font-size: 26px; }
+.intro h2 { font-size: 16px; font-weight: 600; margin-bottom: 7px; }
+.intro p { color: #8e98a9; font-size: 13px; line-height: 1.6; }
+footer { display: flex; justify-content: space-between; gap: 20px; width: min(1180px, 88%); margin: 0 auto; padding: 23px 0; border-top: 1px solid #202635; color: #778091; font-size: 11px; line-height: 1.6; }
+.footer-divider { margin: 0 10px; color: #8055a9; }
+
+@media (max-width: 850px) {
+  .header { flex-wrap: wrap; gap: 18px; padding-top: 20px; }
+  .navigation { order: 3; width: 100%; justify-content: space-between; gap: 12px; }
+  main { margin-top: 30px; }
+  .welcome-content { padding-left: 30px; }
+  .subtitle { letter-spacing: 1.5px; }
+  .welcome-art span { font-size: 8px; letter-spacing: 1px; }
+}
+
+@media (max-width: 580px) {
+  .brand { font-size: 20px; }
+  .login-button { padding: 10px 12px; }
+  .navigation a, .navigation button { font-size: 11px; }
+  .welcome { grid-template-columns: 1fr; }
+  .welcome-content { padding: 35px 26px 10px; }
+  .eyebrow { font-size: 15px; }
+  .description { font-size: 13px; }
+  .welcome-art { min-height: 245px; padding: 10px 0 28px; gap: 14px; }
+  .gamepad { max-width: 210px; }
+  .intro { padding: 22px 18px; gap: 14px; }
+  .intro h2 { font-size: 14px; }
+  .intro p { font-size: 12px; }
+  footer { flex-direction: column; gap: 8px; font-size: 10px; }
+}
