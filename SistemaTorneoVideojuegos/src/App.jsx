@@ -1,64 +1,74 @@
 ﻿import './App.css'
+import Home from './components/Home'
+import Brand from './components/Brand'
+import Login from './auth/Login'
+import { useSession } from './auth/useSession'
+import { dashboardPath, navigationFor, resolveRoute } from './auth/routes'
+import { navigate, useHashPath } from './auth/navigation'
+import Redirect from './auth/Redirect'
 
 function App() {
+  const { user, login, logout } = useSession()
+  const path = useHashPath()
+  const { route, redirect, notFound } = resolveRoute(path, user)
+
+  function handleLogin(username, password) {
+    const authenticatedUser = login(username, password)
+    navigate(dashboardPath(authenticatedUser), true)
+  }
+
+  function handleLogout() {
+    logout()
+    navigate('/', true)
+  }
+
   return (
     <div className="app">
       <header className="header">
-        <a className="brand" href="#inicio" aria-label="TORNEA, inicio">
-          <svg viewBox="0 0 48 36" fill="none" aria-hidden="true">
-            <path d="M14 7h20c5 0 7 5 9 15s-3 14-8 8l-5-6H18l-5 6C8 36 3 32 5 22S9 7 14 7Z" />
-            <path d="M15 12v10m-5-5h10" />
-            <circle cx="33" cy="14" r="1.5" />
-            <circle cx="37" cy="19" r="1.5" />
-          </svg>
-          <span>TORNEO GAMER</span>
-        </a>
-
-        <nav className="navigation" aria-label="Navegación principal">
-          <a className="active" href="#inicio" aria-current="page">Inicio</a>
-          <button disabled>Clasificación</button>
-          <button disabled>Jugadores</button>
-          <button disabled>Estadísticas</button>
-        </nav>
-
-        <button className="login-button" disabled>Iniciar sesión</button>
+        <Brand />
+        {!user && <nav className="navigation" aria-label="Navegación principal">
+          {navigationFor(null).map(item => <a key={item.path} href={`#${item.path}`}
+            className={path === item.path ? 'active' : undefined}
+            aria-current={path === item.path ? 'page' : undefined}>{item.label}</a>)}
+        </nav>}
+        {user ? <div className="session-controls">
+          <span className="session-name">{user.name}<small>{user.role === 'admin' ? 'ADMIN' : 'SUPERADMIN'}</small></span>
+          <button className="login-button" onClick={handleLogout}>Cerrar sesión</button>
+        </div> : <a className="login-button" href="#/login">Iniciar sesión</a>}
       </header>
 
-      <main id="inicio">
-        <section className="welcome" aria-labelledby="welcome-title">
-          <div className="welcome-content">
-            <p className="eyebrow">BIENVENIDO A</p>
-            <h1 id="welcome-title">TORNEO GAMER</h1>
-            <p className="subtitle">SISTEMA DE TORNEOS DE VIDEOJUEGOS</p>
-            <div className="accent-line" />
-            <p className="description">Un espacio para jugar, competir y compartir.</p>
-          </div>
-          <div className="welcome-art" aria-hidden="true">
-            <svg className="gamepad" viewBox="0 0 240 180" fill="none">
-              <path className="gamepad-body" d="M69 39h102c24 0 35 19 45 72s-15 66-38 38l-23-28H85l-23 28c-23 28-48 15-38-38S45 39 69 39Z" />
-              <path className="gamepad-detail" d="M70 61v42M49 82h42" />
-              <circle className="gamepad-button" cx="168" cy="66" r="8" />
-              <circle className="gamepad-button" cx="188" cy="86" r="8" />
-              <circle className="gamepad-stick" cx="98" cy="110" r="13" />
-              <circle className="gamepad-stick" cx="143" cy="110" r="13" />
-              <path className="gamepad-detail" d="M112 69h16" />
-            </svg>
-            <span>La pasión del gaming nos une.</span>
-          </div>
-        </section>
-
-        <section className="intro" aria-labelledby="intro-title">
-          <span className="intro-mark" aria-hidden="true">＋</span>
-          <div>
-            <h2 id="intro-title">Todo comienza con una partida.</h2>
-            <p>Bienvenido al punto de encuentro de nuestra comunidad.</p>
-          </div>
-        </section>
-      </main>
-
-      <footer>
-        <span>TORNEO GAMER <span className="footer-divider">/</span> La pasión del gaming nos une.</span>
-      </footer>
+      <div className={user ? 'private-layout' : 'public-layout'}>
+        {user && <aside className="sidebar">
+          <p className="sidebar-label">MI PANEL</p>
+          <nav aria-label="Navegación de administración">
+            {navigationFor(user).map(item => <a key={item.path} href={`#${item.path}`}
+              className={path === item.path ? 'active' : undefined}
+              aria-current={path === item.path ? 'page' : undefined}>{item.label}</a>)}
+          </nav>
+        </aside>}
+        <main id="contenido">
+          {redirect ? <Redirect to={redirect} /> : notFound ? <section className="module-panel">
+            <h1>Página no encontrada</h1><p>La dirección solicitada no existe.</p>
+            <a className="back-link" href={`#${dashboardPath(user)}`}>Volver al inicio →</a>
+          </section> : route.login ? <Login onLogin={handleLogin} /> : route.home ? <Home /> :
+            <section className="module-panel" aria-labelledby="page-title">
+              <p className="eyebrow">{route.role ? 'PANEL DE ADMINISTRACIÓN' : 'TORNEO GAMER'}</p>
+              <h1 id="page-title">{route.title || route.label}</h1>
+              {route.dashboard ? <>
+                <p>Bienvenido, {user.name}. Tu sesión está activa.</p>
+                <div className="access-summary">
+                  <h2>Acceso de tu cuenta</h2>
+                  <p>{user.role === 'admin'
+                    ? 'Registro de jugadores y puntuaciones, consulta de clasificación y estadísticas.'
+                    : 'Registro de administradores y videojuegos, consulta de clasificación y estadísticas.'}</p>
+                </div>
+                <p className="demo-note">Los módulos se incorporarán en las siguientes etapas.</p>
+              </> : <><p>Esta sección estará disponible próximamente.</p>
+                <p className="demo-note">Por ahora solo está preparada la navegación.</p></>}
+            </section>}
+        </main>
+      </div>
+      <footer><span>TORNEO GAMER <span className="footer-divider">/</span> La pasión del gaming nos une.</span></footer>
     </div>
   )
 }
