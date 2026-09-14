@@ -8,6 +8,7 @@ import { navigate, useHashPath } from './auth/navigation'
 import Redirect from './auth/Redirect'
 import RegistroJugador from './jugadores/RegistroJugador'
 import RegistroVideojuego from './videojuegos/RegistroVideojuego.jsx'
+import ConsultaJugadores from './jugadores/ConsultaJugadores.jsx'
 
 function App() {
   const { user, login, logout } = useSession()
@@ -43,6 +44,7 @@ function App() {
         {user && <aside className="sidebar">
           <p className="sidebar-label">MI PANEL</p>
           <nav aria-label="Navegación de administración">
+            <a href="#/jugadores" className={path === '/jugadores' ? 'active' : undefined} aria-current={path === '/jugadores' ? 'page' : undefined}>Consultar jugadores</a>
             {navigationFor(user).map(item => <a key={item.path} href={`#${item.path}`}
               className={path === item.path ? 'active' : undefined}
               aria-current={path === item.path ? 'page' : undefined}>{item.label}</a>)}
@@ -54,6 +56,7 @@ function App() {
             <a className="back-link" href={`#${dashboardPath(user)}`}>Volver al inicio →</a>
           </section> : route.login ? <Login onLogin={handleLogin} /> : route.home ? <Home /> :
             route.path === '/admin/jugadores' ? <RegistroJugador /> :
+            route.path === '/jugadores' ? <ConsultaJugadores /> :
             route.path === '/superadmin/videojuegos' ? <RegistroVideojuego /> :
             <section className="module-panel" aria-labelledby="page-title">
               <p className="eyebrow">{route.role ? 'PANEL DE ADMINISTRACIÓN' : 'TORNEO GAMER'}</p>

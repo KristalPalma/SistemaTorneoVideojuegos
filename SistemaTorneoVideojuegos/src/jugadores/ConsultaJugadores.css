@@ -1,0 +1,14 @@
+.player-search { display: flex; flex-wrap: wrap; gap: 12px; margin: 25px 0; }
+.player-search label { width: 100%; font-size: 13px; }
+.player-search input { flex: 1; min-width: 160px; padding: 12px; color: #f4f3fa; background: #151f2c; border: 1px solid #303c50; border-radius: 6px; }
+.player-list { list-style: none; padding: 0; margin: 20px 0; }
+.player-list li { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 18px; border-bottom: 1px solid #303c50; }
+.player-list p { color: #a5a7b7; margin-top: 6px; }
+.player-consultation { overflow-wrap: anywhere; }
+.player-pagination { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 25px; }
+.player-consultation button:disabled { opacity: .5; cursor: default; }
+.player-detail { margin-top: 28px; padding: 24px; background: #151f2c; border: 1px solid #303c50; border-radius: 8px; }
+.player-detail h2 { font-size: 20px; margin-bottom: 18px; }
+.player-detail dt { color: #bca0ed; margin-top: 15px; }
+.player-detail dd { margin: 6px 0; }
+@media(max-width: 580px) { .player-list li { align-items: flex-start; flex-direction: column; padding: 16px 0; } .player-search input { width: 100%; flex-basis: 100%; min-width: 0; } .player-pagination { gap: 8px; font-size: 12px; } }

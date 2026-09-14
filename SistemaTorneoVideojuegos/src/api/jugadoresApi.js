@@ -1,5 +1,20 @@
 import { apiClient, ApiError } from './apiClient.js'
 
+export async function obtenerJugadores({ buscar = '', page = 1, limit = 20 } = {}, client = apiClient) {
+  if (!Number.isInteger(page) || page < 1 || page > 10000 || !Number.isInteger(limit) || limit < 1 || limit > 100) throw new Error('Paginación inválida.')
+  const query = new URLSearchParams({ buscar: buscar.trim(), page: String(page), limit: String(limit) })
+  const response = await client.request(`/jugadores?${query}`, { auth: '' })
+  if (!Array.isArray(response?.data)) throw new Error('No fue posible leer el listado de jugadores.')
+  return response
+}
+
+export async function obtenerJugador(id, client = apiClient) {
+  if (!Number.isInteger(id) || id < 1 || id > 2147483647) throw new Error('ID de jugador inválido.')
+  const response = await client.request(`/jugadores/${id}`, { auth: '' })
+  if (!response?.data || response.data.ID !== id) throw new Error('No fue posible leer los datos del jugador.')
+  return response.data
+}
+
 export async function registerPlayer(form, client = apiClient) {
   // Comprobacion previa paginada: ayuda a detectar correo y gamertag repetidos.
   // La garantia frente a concurrencia necesita indices UNIQUE en el backend.
