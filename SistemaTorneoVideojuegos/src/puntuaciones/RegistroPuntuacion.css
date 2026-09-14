@@ -1,0 +1,6 @@
+.score-registration select {
+  width: 100%; padding: 12px; font: inherit; font-size: 14px;
+  color: #f4f3fa; background: #151f2c; border: 1px solid #303c50; border-radius: 6px;
+}
+.score-registration select:focus-visible { outline: 2px solid #ac86ff; outline-offset: 4px; }
+.score-registration select[aria-invalid="true"] { border-color: #e17f97; }

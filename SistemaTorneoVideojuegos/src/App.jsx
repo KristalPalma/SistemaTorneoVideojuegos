@@ -8,9 +8,11 @@ import { navigate, useHashPath } from './auth/navigation'
 import Redirect from './auth/Redirect'
 import RegistroJugador from './jugadores/RegistroJugador'
 import RegistroVideojuego from './videojuegos/RegistroVideojuego.jsx'
+import RegistroPuntuacion from './puntuaciones/RegistroPuntuacion.jsx'
+import { scoreDemoEnabled } from './puntuaciones/scoreService.js'
 
 function App() {
-  const { user, login, logout } = useSession()
+  const { user, login, logout, enterScoreDemo } = useSession()
   const path = useHashPath()
   const { route, redirect, notFound } = resolveRoute(path, user)
 
@@ -52,7 +54,11 @@ function App() {
           {redirect ? <Redirect to={redirect} /> : notFound ? <section className="module-panel">
             <h1>Página no encontrada</h1><p>La dirección solicitada no existe.</p>
             <a className="back-link" href={`#${dashboardPath(user)}`}>Volver al inicio →</a>
-          </section> : route.login ? <Login onLogin={handleLogin} /> : route.home ? <Home /> :
+          </section> : route.login ? <>
+            <Login onLogin={handleLogin} />
+            {scoreDemoEnabled && <button className="auth-primary" onClick={() => { enterScoreDemo(); navigate('/admin/puntuaciones') }}>Probar puntuaciones como Admin (sin API)</button>}
+          </> : route.home ? <Home /> :
+            route.path === '/admin/puntuaciones' ? <RegistroPuntuacion key={user.demo ? 'demo' : 'real'} demo={Boolean(user.demo)} /> :
             route.path === '/admin/jugadores' ? <RegistroJugador /> :
             route.path === '/superadmin/videojuegos' ? <RegistroVideojuego /> :
             <section className="module-panel" aria-labelledby="page-title">
