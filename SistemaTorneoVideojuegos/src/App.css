@@ -39,13 +39,6 @@
   padding: 40px 14px 15px;
 }
 
-/* Dejo espacio entre las opciones del menu. */
-.sidebar nav {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .nav-item {
   display: flex;
   align-items: center;
