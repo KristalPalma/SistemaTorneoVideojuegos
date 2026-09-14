@@ -1,4 +1,4 @@
-﻿import './App.css'
+import './App.css'
 import Home from './components/Home'
 import Brand from './components/Brand'
 import Login from './auth/Login'
@@ -14,8 +14,8 @@ function App() {
   const path = useHashPath()
   const { route, redirect, notFound } = resolveRoute(path, user)
 
-  function handleLogin(username, password) {
-    const authenticatedUser = login(username, password)
+  async function handleLogin(username, password) {
+    const authenticatedUser = await login(username, password)
     navigate(dashboardPath(authenticatedUser), true)
   }
 

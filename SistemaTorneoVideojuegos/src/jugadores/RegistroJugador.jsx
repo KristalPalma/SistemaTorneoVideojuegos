@@ -37,8 +37,8 @@ export default function RegistroJugador() {
       }
       setForm(emptyForm)
       setNotice({ type: 'success', message: `¡Jugador registrado! ${result.player.gamertag} se guardó correctamente.`, player: result.player })
-    } catch {
-      setNotice({ type: 'error', message: 'Ocurrió un error interno al guardar el jugador. No es un error de formato de tus datos; el formulario conserva lo que escribiste.' })
+    } catch (error) {
+      setNotice({ type: 'error', message: error.message || 'No se pudo completar el registro.' })
     } finally {
       submitting.current = false
       setSaving(false)

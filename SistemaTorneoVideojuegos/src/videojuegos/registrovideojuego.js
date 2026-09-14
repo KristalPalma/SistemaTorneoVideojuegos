@@ -1,3 +1,4 @@
+import { registerGame } from '../api/videojuegosApi.js'
 export function validateGame(form, games = []) {
   const errors = {}
   const name = form.name.trim()
@@ -30,23 +31,10 @@ function hasControlCharacters(value) {
   return false
 }
 
-export function createGameRegistry() {
-  // Guardado temporal hasta conectar el backend. Se borra al recargar.
-  const games = []
-  return {
-    async register(form) {
-      const errors = validateGame(form, games)
-      if (Object.keys(errors).length) return { errors }
-      const game = {
-        id: crypto.randomUUID(),
-        name: form.name.trim(),
-        genre: form.genre.trim(),
-      }
-      games.push(game)
-      return { game }
-    },
-  }
+export const gameRegistry = {
+  async register(form) {
+    const errors = validateGame(form)
+    if (Object.keys(errors).length) return { errors }
+    return registerGame(form)
+  },
 }
-
-// Aqui se conectara el backend sin cambiar los campos del formulario.
-export const gameRegistry = createGameRegistry()
