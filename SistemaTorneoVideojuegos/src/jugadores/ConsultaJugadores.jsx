@@ -46,7 +46,6 @@ export default function ConsultaJugadores() {
   return <section className="module-panel player-consultation" aria-labelledby="players-title">
     <h1 id="players-title">Jugadores</h1>
     <p>Consulta los participantes registrados en el torneo.</p>
-    {consultaDemo && <p className="demo-note">Demostración: estos datos son ejemplos temporales, no provienen de MySQL.</p>}
     <form className="player-search" onSubmit={event => { event.preventDefault(); load({ ...query, buscar: text.trim(), page: 1 }) }}>
       <label htmlFor="player-search">Buscar por nombre o gamertag</label>
       <input id="player-search" type="search" placeholder="Buscar por nombre o gamertag..." value={text} onChange={event => setText(event.target.value)} />
