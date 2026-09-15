@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 export default function Login({ onLogin }) {
   const [username, setUsername] = useState('')
@@ -6,21 +6,25 @@ export default function Login({ onLogin }) {
   const [visible, setVisible] = useState(false)
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
+  const pending = useRef(false)
 
   async function submit(event) {
     event.preventDefault()
+    if (pending.current) return
     setError('')
     if (!username.trim() || !password) {
       setError('Ingresa tu correo y contraseña.')
       return
     }
     setSaving(true)
+    pending.current = true
     try {
       await onLogin(username, password)
     } catch (error) {
       setError(error.message)
       setPassword('')
     } finally {
+      pending.current = false
       setSaving(false)
     }
   }

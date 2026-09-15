@@ -10,7 +10,7 @@ test('login real consulta auth/me y conserva Basic solo tras validar el rol', as
   const client = createApiClient({ baseUrl: 'https://api.example.test/api', fetchImpl: async (url, options) => {
     assert.ok(url.endsWith('/auth/me'))
     assert.ok(options.headers.Authorization.startsWith('Basic '))
-    return reply({ ID: 1, nombre: 'Ana', rol: 'Superadministrador' })
+    return reply({ id: 1, nombre: 'Ana', correo: 'ana@example.test', rol: 'Superadministrador' })
   } })
   assert.equal((await loginApi('ana@example.test', 'test-password', client)).role, 'superadmin')
   assert.ok(client.getAuthorization())

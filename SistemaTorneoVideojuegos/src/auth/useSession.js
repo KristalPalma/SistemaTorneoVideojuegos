@@ -1,6 +1,6 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { loginApi } from '../api/authApi.js'
-import { apiClient } from '../api/apiClient.js'
+import { clearSession } from './session.js'
 
 export function useSession() {
   const [user, setUser] = useState(null)
@@ -10,7 +10,7 @@ export function useSession() {
     return authenticated
   }
   function logout() {
-    apiClient.clearAuthorization()
+    clearSession()
     setUser(null)
   }
   return { user, login, logout }

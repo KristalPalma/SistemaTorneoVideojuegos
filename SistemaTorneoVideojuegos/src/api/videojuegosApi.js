@@ -1,4 +1,27 @@
 import { apiClient, ApiError } from './apiClient.js'
+import { validateId, validatePagination, validatePatch } from './validation.js'
+
+export async function obtenerVideojuegos({ page = 1, limit = 20 } = {}, client = apiClient) {
+  validatePagination(page, limit)
+  const query = new URLSearchParams({ page: String(page), limit: String(limit) })
+  return client.request(`/videojuegos?${query}`, { auth: '' })
+}
+
+export async function obtenerVideojuego(id, client = apiClient) {
+  validateId(id)
+  return client.request(`/videojuegos/${id}`, { auth: '' })
+}
+
+export async function actualizarVideojuego(id, changes, client = apiClient) {
+  validateId(id)
+  const body = validatePatch(changes, { nombre: 100, genero: 50 })
+  return client.request(`/videojuegos/${id}`, { method: 'PATCH', body })
+}
+
+export async function eliminarVideojuego(id, client = apiClient) {
+  validateId(id)
+  return client.request(`/videojuegos/${id}`, { method: 'DELETE' })
+}
 
 export async function registerGame(form, client = apiClient) {
   try {

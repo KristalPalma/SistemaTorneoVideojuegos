@@ -3,7 +3,7 @@ import { playerRegistry } from './registroplayer'
 import './RegistroJugador.css'
 
 
-//cAMBIAR EN CUANTO SE TENGA EL BACK
+// Los campos se envian a la API mediante playerRegistry.
 const emptyForm = { name: '', gamertag: '', email: '' }
 
 export default function RegistroJugador() {
@@ -71,6 +71,7 @@ export default function RegistroJugador() {
 
         <label htmlFor="player-date">Fecha de registro</label>
         <input id="player-date" value={new Date().toLocaleDateString('es-MX')} readOnly aria-describedby="player-date-help" />
+        <p id="player-date-help" className="player-help">La fecha definitiva y el ID los asigna el servidor al guardar.</p>
 
         {notice && <div className={notice.type === 'error' ? 'auth-error' : 'player-success'}
           role={notice.type === 'error' ? 'alert' : 'status'}>
