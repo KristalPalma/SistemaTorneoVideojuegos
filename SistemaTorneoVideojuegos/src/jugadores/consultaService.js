@@ -3,7 +3,7 @@ import { obtenerJugador, obtenerJugadores } from '../api/jugadoresApi.js'
 // Sin URL, solo en desarrollo se muestran ejemplos. Un fallo de API no activa mocks.
 export const consultaDemo = Boolean(import.meta.env?.DEV && !import.meta.env?.VITE_API_URL?.trim())
 
-export function createConsultaService(demo = consultaDemo, players = jugadoresMock) {
+export function createConsultaService(demo = consultaDemo) {
   return {
     async list({ buscar = '', page = 1, limit = 20 }) {
       if (!demo) return obtenerJugadores({ buscar, page, limit })
