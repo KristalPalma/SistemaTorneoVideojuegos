@@ -1,6 +1,18 @@
 import { apiClient, ApiError } from './apiClient.js'
 import { validateId, validatePagination } from './validation.js'
 
+export async function obtenerPuntuaciones({ ID_videojuego, page = 1, limit = 100 } = {}, client = apiClient) {
+  validatePagination(page, limit)
+  const query = new URLSearchParams({ page: String(page), limit: String(limit) })
+  if (ID_videojuego !== undefined) {
+    validateId(ID_videojuego)
+    query.set('ID_videojuego', String(ID_videojuego))
+  }
+  const result = await client.request(`/puntuaciones?${query}`, { auth: '' })
+  if (!Array.isArray(result?.data)) throw new ApiError('No fue posible leer las puntuaciones.', 0, 'RESPONSE')
+  return result.data
+}
+
 export async function obtenerPuntuacionesJugador(id, { page = 1, limit = 5 } = {}, client = apiClient) {
   validateId(id)
   validatePagination(page, limit)
