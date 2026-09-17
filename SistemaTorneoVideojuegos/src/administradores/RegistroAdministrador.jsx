@@ -5,7 +5,7 @@ import '../jugadores/RegistroJugador.css'
 
 const empty = { nombre: '', correo: '', contrasena: '', confirmacion: '' }
 
-export default function RegistroAdministrador({ user }) {
+export default function RegistroAdministrador({ user, onCancel, onSuccess }) {
   const [form, setForm] = useState(empty)
   const [errors, setErrors] = useState({})
   const [notice, setNotice] = useState(null)
@@ -36,6 +36,7 @@ export default function RegistroAdministrador({ user }) {
       }
       setForm(empty)
       setVisible({})
+      if (onSuccess) { onSuccess(result.account); return }
       setNotice({ success: true, message: `Administrador creado correctamente: ${result.account.nombre} (${result.account.correo}).` })
       document.getElementById('administrator-nombre')?.focus()
     } catch (error) {
@@ -68,11 +69,12 @@ export default function RegistroAdministrador({ user }) {
           {visible[name] ? 'Ocultar' : 'Mostrar'}
         </button>}
         </div>
-        {name === 'contrasena' && <p className="player-help" id="administrator-password-help">Entre 15 y 512 caracteres. Puedes usar una frase larga.</p>}
+        {name === 'contrasena' && <p className="player-help" id="administrator-password-help">Más de 15 caracteres requeridos.</p>}
         {errors[name] && <p className="player-field-error" role="alert" id={`administrator-${name}-error`}>{errors[name]}</p>}
       </div>)}
       {notice && <p className={notice.success ? 'player-success' : 'auth-error'} role={notice.success ? 'status' : 'alert'}>{notice.message}</p>}
       <button className="auth-primary" type="submit" disabled={saving}>{saving ? 'Creando cuenta…' : 'Crear administrador'}</button>
+      {onCancel && <button className="login-button" type="button" disabled={saving} onClick={onCancel}>Cancelar</button>}
     </form>
   </section>
 }
