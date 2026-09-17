@@ -1,0 +1,7 @@
+.score-edit { margin-top: 18px; padding: 18px; border: 1px solid #5a427d; border-radius: 10px; background: #101723; }
+.score-edit form { display: grid; gap: 12px; }
+.score-edit input { width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid #303c50; border-radius: 6px; background: #151f2c; color: #f4f3fa; }
+.score-edit small { color: #a99bbf; }
+.score-edit-confirmation { padding: 14px; border: 1px solid #72519c; border-radius: 8px; line-height: 1.6; }
+.score-edit button:disabled { opacity: .5; cursor: wait; }
+.player-score-history li { flex-wrap: wrap; }

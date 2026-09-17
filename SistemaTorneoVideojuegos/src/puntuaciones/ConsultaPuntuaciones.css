@@ -1,0 +1,19 @@
+.scores-consultation { min-width: 0; }
+.scores-filter-field { flex: 1; min-width: 180px; display: grid; gap: 8px; }
+.scores-filters .scores-order { flex: 0 0 auto; min-width: 150px; font-size: 12px; }
+.scores-filters .scores-order select { padding: 8px; font-size: 12px; border-color: #7852a8; }
+.scores-filters { display: flex; align-items: end; flex-wrap: wrap; gap: 16px; border: 1px solid #303c50; border-radius: 10px; padding: 18px; margin: 24px 0; }
+.scores-filters legend { padding: 0 8px; color: #b9a5d3; }
+.scores-filters label { display: grid; gap: 8px; flex: 1; min-width: 180px; font-size: 13px; }
+.scores-filters select { width: 100%; min-width: 0; padding: 12px; color: #f4f3fa; background: #151f2c; border: 1px solid #303c50; border-radius: 6px; }
+.scores-table-scroll { overflow-x: auto; margin-top: 24px; }
+.scores-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+.scores-table th { padding: 16px; background: #151f2c; color: #b9a5d3; }
+.scores-table td { padding: 18px 16px; border-bottom: 1px solid #303c50; }
+.scores-table td > small { display: block; margin-top: 6px; color: #a99bbf; }
+.scores-table button { white-space: nowrap; }
+.scores-consultation button:disabled { opacity: .5; cursor: default; }
+.scores-consultation .score-edit { max-width: 600px; }
+.scores-consultation .score-edit dl { display: grid; grid-template-columns: auto 1fr; gap: 12px; margin: 18px 0; }
+.scores-consultation .score-edit dd { margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 580px) { .scores-filters label { flex-basis: 100%; } .scores-table th, .scores-table td { padding: 12px; } }

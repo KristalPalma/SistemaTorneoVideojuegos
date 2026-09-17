@@ -9,7 +9,7 @@ import Redirect from './auth/Redirect'
 import RegistroVideojuego from './videojuegos/RegistroVideojuego.jsx'
 import ConsultaJugadores from './jugadores/ConsultaJugadores.jsx'
 import ConsultaVideojuegos from './videojuegos/ConsultaVideojuegos.jsx'
-import RegistroPuntuaciones from './puntuaciones/RegistroPuntuaciones.jsx'
+import ConsultaPuntuaciones from './puntuaciones/ConsultaPuntuaciones.jsx'
 import Estadisticas from './estadisticas/Estadisticas.jsx'
 
 function App() {
@@ -60,7 +60,7 @@ function App() {
             route.path === '/jugadores' && user?.role === 'Administrador' ? <Redirect to="/admin/jugadores" /> :
             (route.path === '/jugadores' || route.path === '/admin/jugadores') ? <ConsultaJugadores key={user?.role || 'publico'} user={user} /> :
             route.path === '/superadmin/videojuegos' ? <RegistroVideojuego /> :
-            route.path === '/admin/puntuaciones' ? <RegistroPuntuaciones key={user.id} /> :
+            ['/puntuaciones', '/admin/puntuaciones', '/superadmin/puntuaciones'].includes(route.path) ? <ConsultaPuntuaciones key={user?.id || 'publico'} user={user} /> :
             ['/estadisticas', '/admin/estadisticas', '/superadmin/estadisticas'].includes(route.path) ? <Estadisticas /> :
             (route.path === '/videojuegos' || route.path === '/superadmin/videojuegos/gestion') ? <ConsultaVideojuegos key={user?.role || 'publico'} user={user} /> :
             <section className="module-panel" aria-labelledby="page-title">

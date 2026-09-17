@@ -7,7 +7,7 @@ import BuscarOpcion from './BuscarOpcion.jsx'
 
 const emptyForm = { ID_jugador: '', ID_videojuego: '', puntuacion: '' }
 
-export default function RegistroPuntuaciones() {
+export default function RegistroPuntuaciones({ onCancel, onSuccess }) {
   const [form, setForm] = useState(emptyForm)
   const [options, setOptions] = useState({ loading: true, jugadores: [], videojuegos: [] })
   const [revision, setRevision] = useState(0)
@@ -59,6 +59,7 @@ export default function RegistroPuntuaciones() {
       setNotice({ type: 'success', message: `Puntuación registrada correctamente. ID: ${result.data.ID}.` })
       setForm(emptyForm)
       operation.current = null
+      if (onSuccess) { onSuccess(result.data); return }
       playerRef.current?.focus()
     } catch (error) {
       setNotice({ type: 'error', message: error.message || 'No fue posible guardar la puntuación.' })
@@ -100,6 +101,7 @@ export default function RegistroPuntuaciones() {
       <p className="player-help" id="score-value-help">Usa un número entero igual o mayor que cero. La fecha y el ID se asignan al guardar.</p>
       {notice && <div className={notice.type === 'error' ? 'auth-error' : 'player-success'} role={notice.type === 'error' ? 'alert' : 'status'}>{notice.message}</div>}
       <button className="auth-primary" type="submit" disabled={saving || unavailable}>{saving ? 'Guardando…' : 'Guardar puntuación'}</button>
+      {onCancel && <button className="login-button" type="button" disabled={saving} onClick={onCancel}>Cancelar</button>}
     </form>
   </section>
 }

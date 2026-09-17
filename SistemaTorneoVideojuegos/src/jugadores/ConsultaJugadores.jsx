@@ -6,7 +6,8 @@ import PuntuacionesJugador from './PuntuacionesJugador.jsx'
 import { canManagePlayers, queryAfterMutation } from './gestionJugadores.js'
 import './ConsultaJugadores.css'
 
-function DetalleJugador({ id, onClose }) {
+function DetalleJugador({ id, user, onClose }) {
+  const [savingScore, setSavingScore] = useState(false)
   const dialogRef = useRef(null)
   const [state, setState] = useState({ loading: true })
   const [retry, setRetry] = useState(0)
@@ -29,15 +30,15 @@ function DetalleJugador({ id, onClose }) {
     return () => { active = false }
   }, [id, retry])
   return <dialog ref={dialogRef} className="player-detail" aria-labelledby="detail-title"
-    onCancel={event => { event.preventDefault(); onClose() }}
+    onCancel={event => { event.preventDefault(); if (!savingScore) onClose() }}
     onClick={event => {
-      if (event.target !== event.currentTarget) return
+      if (savingScore || event.target !== event.currentTarget) return
       const rect = event.currentTarget.getBoundingClientRect()
       if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) onClose()
     }}>
     <div className="player-detail-heading">
       <div><p className="player-detail-label">PERFIL DEL JUGADOR</p><h2 id="detail-title">Información del jugador</h2></div>
-      <button className="player-detail-close" aria-label="Cerrar detalle" onClick={onClose} autoFocus>×</button>
+      <button className="player-detail-close" aria-label="Cerrar detalle" disabled={savingScore} onClick={onClose} autoFocus>×</button>
     </div>
     {state.loading ? <p role="status">Cargando detalle…</p> : state.error ? <div role="alert" className="auth-error">
       <p>{state.error}</p><button className="login-button" onClick={() => { setState({ loading: true }); setRetry(value => value + 1) }}>Reintentar</button>
@@ -51,7 +52,7 @@ function DetalleJugador({ id, onClose }) {
       <dt>Gamertag</dt><dd>{state.player.gamertag}</dd>
       <dt>Correo</dt><dd>{state.player.correo || 'No disponible'}</dd>
       <dt>Fecha de registro</dt><dd>{formatPlayerDate(state.player.fecha_registro)}</dd>
-    </dl><PuntuacionesJugador key={id} id={id} /></>}
+    </dl><PuntuacionesJugador key={id} id={id} playerName={state.player.nombre} user={user} onBusy={setSavingScore} /></>}
   </dialog>
 }
 
@@ -158,6 +159,6 @@ export default function ConsultaJugadores({ user }) {
       <span>Página {query.page}</span>
       <button className="login-button" disabled={Boolean(panel) || state.loading || Boolean(state.error) || state.data.length < query.limit || query.page >= 10000} onClick={() => load({ ...query, page: query.page + 1 })}>Siguiente</button>
     </nav>
-    {selected !== null && <DetalleJugador key={selected} id={selected} onClose={() => setSelected(null)} />}
+    {selected !== null && <DetalleJugador key={selected} id={selected} user={user} onClose={() => setSelected(null)} />}
   </section>
 }

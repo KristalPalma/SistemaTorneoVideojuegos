@@ -1,13 +1,15 @@
 ﻿import { useRef, useState } from 'react'
 
-export default function BuscarOpcion({ id, items, value, onChange, placeholder, disabled, errorId, inputRef }) {
+import './RegistroPuntuaciones.css'
+
+export default function BuscarOpcion({ id, items, value, onChange, placeholder, disabled, errorId, inputRef, required = true }) {
   const [text, setText] = useState('')
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(-1)
   const listRef = useRef(null)
   const label = item => `${item.nombre}${item.gamertag ? ` · ${item.gamertag}` : ''}`
   const normalize = text => text.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
-  const matches = text.trim() ? items.filter(item => normalize(label(item)).includes(normalize(text))) : []
+  const matches = text.trim() ? items.filter(item => normalize(label(item)).includes(normalize(text))).slice(0, 10) : []
   const selected = items.find(item => String(item.ID) === value)
   const expanded = open && Boolean(text.trim()) && !disabled && !selected
 
@@ -19,7 +21,7 @@ export default function BuscarOpcion({ id, items, value, onChange, placeholder, 
   }
 
   return <div className="score-search-option">
-    <input id={id} ref={inputRef} role="combobox" type="text" autoComplete="off" required
+    <input id={id} ref={inputRef} role="combobox" type="text" autoComplete="off" required={required}
       placeholder={placeholder} value={selected ? label(selected) : text} disabled={disabled}
       aria-expanded={expanded} aria-autocomplete="list" aria-controls={`${id}-options`}
       aria-invalid={Boolean(errorId)} aria-describedby={errorId}

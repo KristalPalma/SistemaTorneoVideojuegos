@@ -1,5 +1,4 @@
 import { obtenerJugador, obtenerJugadores } from '../api/jugadoresApi.js'
-import { jugadoresMock } from '../mocks/jugadoresMock.js'
 
 // Sin URL, solo en desarrollo se muestran ejemplos. Un fallo de API no activa mocks.
 export const consultaDemo = Boolean(import.meta.env?.DEV && !import.meta.env?.VITE_API_URL?.trim())

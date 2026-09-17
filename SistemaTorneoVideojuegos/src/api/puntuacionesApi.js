@@ -1,9 +1,26 @@
 import { apiClient, ApiError } from './apiClient.js'
 import { validateId, validatePagination } from './validation.js'
 
-export async function obtenerPuntuaciones({ ID_videojuego, page = 1, limit = 100 } = {}, client = apiClient) {
+export async function actualizarPuntuacion(id, puntuacion, client = apiClient) {
+  validateId(id)
+  if (!Number.isInteger(puntuacion) || puntuacion < 0 || puntuacion > 2147483647) {
+    throw new ApiError('La puntuación debe ser un entero entre 0 y 2147483647.', 0, 'VALIDATION')
+  }
+  // Solo mandamos el valor: el jugador y el videojuego no se editan aquí.
+  const result = await client.request(`/puntuaciones/${id}`, { method: 'PATCH', body: { puntuacion } })
+  if (result?.data?.ID !== id || result.data.puntuacion !== puntuacion) {
+    throw new ApiError('No se pudo confirmar el cambio. Consulta la puntuación antes de reintentar.', 0, 'RESPONSE')
+  }
+  return result.data
+}
+
+export async function obtenerPuntuaciones({ ID_jugador, ID_videojuego, page = 1, limit = 100 } = {}, client = apiClient) {
   validatePagination(page, limit)
   const query = new URLSearchParams({ page: String(page), limit: String(limit) })
+  if (ID_jugador !== undefined) {
+    validateId(ID_jugador)
+    query.set('ID_jugador', String(ID_jugador))
+  }
   if (ID_videojuego !== undefined) {
     validateId(ID_videojuego)
     query.set('ID_videojuego', String(ID_videojuego))
