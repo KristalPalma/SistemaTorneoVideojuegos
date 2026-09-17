@@ -1,3 +1,4 @@
+import { registerPlayer } from '../api/jugadoresApi.js'
 export function validatePlayer(form, players = []) {
   const errors = {}
   const gamertag = form.gamertag.trim()
@@ -21,29 +22,13 @@ export function validatePlayer(form, players = []) {
   return errors
 }
 
-export function createPlayer(form) {
-  return {
-    id: crypto.randomUUID(),
-    name: form.name.trim(),
-    gamertag: form.gamertag.trim(),
-    email: form.email.trim(),
-    registeredAt: new Date().toISOString(),
-  }
+export const playerRegistry = {
+  async register(form) {
+    const errors = validatePlayer(form)
+    if (form.name.trim().length > 100) errors.name = 'El nombre admite hasta 100 caracteres.'
+    if (form.gamertag.trim().length > 50) errors.gamertag = 'El gamertag admite hasta 50 caracteres.'
+    if (form.email.trim().length > 150) errors.email = 'El correo admite hasta 150 caracteres.'
+    if (Object.keys(errors).length) return { errors }
+    return registerPlayer(form)
+  },
 }
-
-export function createPlayerRegistry() {
-  // Pendiente: conectar el backend. Mientras tanto guardo los jugadores en esta lista.
-  const players = []
-  return {
-    async register(form) {
-      const errors = validatePlayer(form, players)
-      if (Object.keys(errors).length) return { errors }
-      const player = createPlayer(form)
-      players.push(player)
-      return { player }
-    },
-  }
-}
-
-// reemplazar
-export const playerRegistry = createPlayerRegistry()

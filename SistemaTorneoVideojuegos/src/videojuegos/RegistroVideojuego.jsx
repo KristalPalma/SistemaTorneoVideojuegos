@@ -36,8 +36,8 @@ export default function RegistroVideojuego() {
       }
       setForm(emptyForm)
       setNotice({ type: 'success', message: `¡Videojuego registrado! ${result.game.name} se guardó correctamente.`, game: result.game })
-    } catch {
-      setNotice({ type: 'error', message: 'Ocurrió un error interno al guardar el videojuego. El formulario conserva tus datos; intenta de nuevo.' })
+    } catch (error) {
+      setNotice({ type: 'error', message: error.message || 'No se pudo completar el registro.' })
     } finally {
       submitting.current = false
       setSaving(false)
@@ -71,7 +71,7 @@ export default function RegistroVideojuego() {
         </div>}
         <button className="auth-primary" type="submit" disabled={saving}>{saving ? 'Guardando…' : 'Guardar videojuego'}</button>
       </form>
-      <p className="demo-note">Registro temporal: los videojuegos se conservan al navegar, pero se pierden al recargar. La conexión al servidor se incorporará después.</p>
+      <p className="demo-note">Los registros se guardan en el servidor configurado.</p>
     </section>
   )
 }

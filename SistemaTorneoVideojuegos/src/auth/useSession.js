@@ -1,35 +1,18 @@
-﻿// @ts-nocheck TS1149: the workspace is referenced with inconsistent directory casing.
-import { useEffect, useState } from 'react'
-import { authenticate, clearSession, readSession, saveSession } from './session'
+import { useState } from 'react'
+import { loginApi } from '../api/authApi.js'
+import { clearSession } from './session.js'
 
 export function useSession() {
-  const [session, setSession] = useState(() => {
-    try { return readSession(window.sessionStorage) } catch { return null }
-  })
-
-  useEffect(() => {
-    if (!session) return
-    const timer = window.setTimeout(() => {
-      try { clearSession(window.sessionStorage) } catch {}
-      setSession(null)
-    }, Math.max(0, session.expiresAt - Date.now()))
-    return () => window.clearTimeout(timer)
-  }, [session])
-
-  function login(username, password) {
-    const user = authenticate(username, password)
-    try {
-      setSession(saveSession(user, window.sessionStorage))
-    } catch {
-      throw new Error('No se pudo guardar la sesión. Habilita el almacenamiento del navegador e intenta de nuevo.')
-    }
-    return user
+  const [user, setUser] = useState(null)
+  async function login(email, password, signal) {
+    setUser(null)
+    const authenticated = await loginApi(email, password, undefined, signal)
+    setUser(authenticated)
+    return authenticated
   }
-
   function logout() {
-    try { clearSession(window.sessionStorage) } catch { /* El almacenamiento puede estar bloqueado. */ }
-    setSession(null)
+    clearSession()
+    setUser(null)
   }
-
-  return { user: session?.user ?? null, login, logout }
+  return { user, login, logout }
 }
