@@ -15,8 +15,8 @@ function App() {
   const path = useHashPath()
   const { route, redirect, notFound } = resolveRoute(path, user)
 
-  async function handleLogin(username, password) {
-    const authenticatedUser = await login(username, password)
+  async function handleLogin(email, password, signal) {
+    const authenticatedUser = await login(email, password, signal)
     navigate(dashboardPath(authenticatedUser), true)
   }
 
@@ -35,7 +35,7 @@ function App() {
             aria-current={path === item.path ? 'page' : undefined}>{item.label}</a>)}
         </nav>}
         {user ? <div className="session-controls">
-          <span className="session-name">{user.name}<small>{user.role === 'admin' ? 'ADMIN' : 'SUPERADMIN'}</small></span>
+          <span className="session-name">{user.name}<small>{user.role === 'Administrador' ? 'ADMIN' : 'SUPERADMIN'}</small></span>
           <button className="login-button" onClick={handleLogout}>Cerrar sesión</button>
         </div> : <a className="login-button" href="#/login">Iniciar sesión</a>}
       </header>
@@ -65,7 +65,7 @@ function App() {
                 <p>Bienvenido, {user.name}. Tu sesión está activa.</p>
                 <div className="access-summary">
                   <h2>Acceso de tu cuenta</h2>
-                  <p>{user.role === 'admin'
+                  <p>{user.role === 'Administrador'
                     ? 'Registro de jugadores y puntuaciones, consulta de clasificación y estadísticas.'
                     : 'Registro de administradores y videojuegos, consulta de clasificación y estadísticas.'}</p>
                 </div>

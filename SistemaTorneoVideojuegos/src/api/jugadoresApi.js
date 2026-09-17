@@ -1,4 +1,27 @@
 import { apiClient, ApiError } from './apiClient.js'
+import { validateId, validatePagination, validatePatch } from './validation.js'
+
+export async function obtenerJugadores({ buscar = '', page = 1, limit = 20 } = {}, client = apiClient) {
+  validatePagination(page, limit)
+  const query = new URLSearchParams({ buscar: buscar.trim(), page: String(page), limit: String(limit) })
+  return client.request(`/jugadores?${query}`, { auth: '' })
+}
+
+export async function obtenerJugador(id, client = apiClient) {
+  validateId(id)
+  return client.request(`/jugadores/${id}`, { auth: '' })
+}
+
+export async function actualizarJugador(id, changes, client = apiClient) {
+  validateId(id)
+  const body = validatePatch(changes, { nombre: 100, gamertag: 50, correo: 150 })
+  return client.request(`/jugadores/${id}`, { method: 'PATCH', body })
+}
+
+export async function eliminarJugador(id, client = apiClient) {
+  validateId(id)
+  return client.request(`/jugadores/${id}`, { method: 'DELETE' })
+}
 
 export async function obtenerJugadores({ buscar = '', page = 1, limit = 20 } = {}, client = apiClient) {
   if (!Number.isInteger(page) || page < 1 || page > 10000 || !Number.isInteger(limit) || limit < 1 || limit > 100) throw new Error('Paginación inválida.')

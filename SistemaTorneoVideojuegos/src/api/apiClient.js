@@ -16,29 +16,37 @@ export function basicAuthorization(email, password) {
 export function createApiClient({ baseUrl, fetchImpl = globalThis.fetch } = {}) {
   // Las credenciales solo viven en memoria, nunca en storage ni en variables VITE.
   let authorization = ''
+  let authorizationVersion = 0
   return {
-    setAuthorization(value) { authorization = value },
-    clearAuthorization() { authorization = '' },
+    setAuthorization(value) { authorization = value; authorizationVersion++ },
+    clearAuthorization() { authorization = ''; authorizationVersion++ },
     getAuthorization() { return authorization },
+    getAuthorizationVersion() { return authorizationVersion },
     async request(path, { method = 'GET', body, auth, idempotencyKey, signal } = {}) {
       if (!baseUrl?.trim()) throw new ApiError('Falta configurar VITE_API_URL. Solicita la URL al equipo de backend.', 0, 'CONFIG')
-      const url = new URL(baseUrl)
+      let url
+      try { url = new URL(baseUrl.trim()) } catch {
+        throw new ApiError('VITE_API_URL no es una URL válida.', 0, 'CONFIG')
+      }
       if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash) {
         throw new ApiError('VITE_API_URL debe ser una URL HTTP(S) sin credenciales, query ni fragmento.', 0, 'CONFIG')
       }
       const headers = { Accept: 'application/json' }
-      const credential = auth ?? authorization
+      // Las consultas publicas no necesitan credenciales. /auth/me las pasa explicitamente.
+      const credential = auth ?? (method === 'GET' ? '' : authorization)
       if (credential) headers.Authorization = credential
       if (body !== undefined) headers['Content-Type'] = 'application/json'
       if (idempotencyKey) headers['Idempotency-Key'] = idempotencyKey
       let response
       try {
-        response = await fetchImpl(`${baseUrl.replace(/\/+$/, '')}${path}`, {
+        response = await fetchImpl(`${baseUrl.trim().replace(/\/+$/, '')}${path}`, {
           method, headers, body: body === undefined ? undefined : JSON.stringify(body),
-          signal, credentials: 'omit', redirect: 'error', cache: 'no-store',
+          signal: signal ?? AbortSignal.timeout(15000), credentials: 'omit', redirect: 'error', cache: 'no-store',
         })
       } catch {
-        throw new ApiError('No se pudo confirmar la respuesta del servidor. Revisa la conexión; la operación podría haberse guardado.', 0, 'NETWORK')
+        throw new ApiError(method === 'GET'
+          ? 'No se pudo consultar la API. Comprueba que el backend esté encendido y que permita el origen del frontend.'
+          : 'No se pudo confirmar la respuesta del servidor. Revisa la conexión; la operación podría haberse guardado.', 0, 'NETWORK')
       }
       const requestId = response.headers.get('X-Request-Id') || ''
       if (response.status === 204) return null
@@ -56,7 +64,11 @@ export function createApiClient({ baseUrl, fetchImpl = globalThis.fetch } = {}) 
           429: 'Demasiadas solicitudes. Espera antes de intentar de nuevo.',
           503: 'El servidor no está disponible temporalmente.',
         }
-        throw new ApiError(messages[response.status] || 'Ocurrió un error en el servidor.', response.status,
+        // Solo mensajes controlados de errores de negocio, nunca detalles de un 500.
+        const businessMessage = [400, 404, 409, 422].includes(response.status) &&
+          typeof payload?.error?.message === 'string' && payload.error.message.length <= 300
+          ? payload.error.message : null
+        throw new ApiError(businessMessage || messages[response.status] || 'Ocurrió un error en el servidor.', response.status,
           payload?.error?.code || '', payload?.requestId || requestId)
       }
       if (!payload || !Object.hasOwn(payload, 'data')) throw new ApiError('La respuesta del servidor no tiene el formato esperado.', response.status, 'RESPONSE', requestId)
