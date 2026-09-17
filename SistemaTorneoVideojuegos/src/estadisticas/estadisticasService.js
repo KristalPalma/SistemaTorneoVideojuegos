@@ -9,6 +9,17 @@ export function numeric(value) {
   return Number.isFinite(result) && result >= 0 ? result : null
 }
 
+export async function loadDashboardStatistics(gameId, signal, client = apiClient) {
+  if (gameId !== undefined) validateId(gameId)
+  const result = await client.request(`/estadisticas${gameId === undefined ? '' : `?ID_videojuego=${gameId}`}`, { auth: '', signal })
+  const data = result?.data
+  if (!data || ['totalJugadores', 'totalVideojuegos', 'totalPuntuaciones'].some(key => !Number.isInteger(numeric(data[key])))) {
+    throw new Error('No se pudo leer el resumen del torneo.')
+  }
+  return { players: numeric(data.totalJugadores), games: numeric(data.totalVideojuegos),
+    total: numeric(data.totalPuntuaciones), average: numeric(data.puntuacionPromedio), groups: [] }
+}
+
 export function summarizeScores(rows, gameId) {
   const valid = rows.flatMap(row => {
     const score = numeric(row?.puntuacion)

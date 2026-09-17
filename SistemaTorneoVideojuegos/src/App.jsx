@@ -11,6 +11,7 @@ import ConsultaJugadores from './jugadores/ConsultaJugadores.jsx'
 import ConsultaVideojuegos from './videojuegos/ConsultaVideojuegos.jsx'
 import ConsultaPuntuaciones from './puntuaciones/ConsultaPuntuaciones.jsx'
 import Estadisticas from './estadisticas/Estadisticas.jsx'
+import Dashboard from './components/Dashboard.jsx'
 
 function App() {
   const { user, login, logout } = useSession()
@@ -46,7 +47,6 @@ function App() {
         {user && <aside className="sidebar">
           <p className="sidebar-label">MI PANEL</p>
           <nav aria-label="Navegación de administración">
-            {user.role !== 'Administrador' && <a href="#/jugadores" className={path === '/jugadores' ? 'active' : undefined} aria-current={path === '/jugadores' ? 'page' : undefined}>Jugadores</a>}
             {navigationFor(user).map(item => <a key={item.path} href={`#${item.path}`}
               className={path === item.path ? 'active' : undefined}
               aria-current={path === item.path ? 'page' : undefined}>{item.label}</a>)}
@@ -57,6 +57,7 @@ function App() {
             <h1>Página no encontrada</h1><p>La dirección solicitada no existe.</p>
             <a className="back-link" href={`#${dashboardPath(user)}`}>Volver al inicio →</a>
           </section> : route.login ? <Login onLogin={handleLogin} /> : route.home ? <Home /> :
+            route.dashboard ? <Dashboard key={user.id} user={user} /> :
             route.path === '/jugadores' && user?.role === 'Administrador' ? <Redirect to="/admin/jugadores" /> :
             (route.path === '/jugadores' || route.path === '/admin/jugadores') ? <ConsultaJugadores key={user?.role || 'publico'} user={user} /> :
             route.path === '/superadmin/videojuegos' ? <RegistroVideojuego /> :

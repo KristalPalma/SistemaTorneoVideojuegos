@@ -24,7 +24,9 @@ export function dashboardPath(user) {
 }
 
 export function navigationFor(user) {
-  return routes.filter(route => user ? route.role === user.role : !route.role && !route.login)
+  const items = routes.filter(route => user ? route.role === user.role : !route.role && !route.login)
+  if (user?.role === 'Superadministrador') items.push(routes.find(route => route.path === '/jugadores'))
+  return items.sort((a, b) => Number(Boolean(b.dashboard || b.home)) - Number(Boolean(a.dashboard || a.home)))
 }
 
 export function resolveRoute(path, user) {
