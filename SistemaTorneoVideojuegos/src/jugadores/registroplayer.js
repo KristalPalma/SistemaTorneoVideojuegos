@@ -1,4 +1,4 @@
-import { registerPlayer } from '../api/jugadoresApi.js'
+import { actualizarJugador, registerPlayer } from '../api/jugadoresApi.js'
 export function validatePlayer(form, players = []) {
   const errors = {}
   const gamertag = form.gamertag.trim()
@@ -19,16 +19,22 @@ export function validatePlayer(form, players = []) {
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
     errors.email = 'El correo debe tener un formato como nombre@dominio.com, sin espacios.'
   }
+  if (form.name.trim().length > 100) errors.name = 'El nombre admite hasta 100 caracteres.'
+  if (form.gamertag.trim().length > 50) errors.gamertag = 'El gamertag admite hasta 50 caracteres.'
+  if (form.email.trim().length > 150) errors.email = 'El correo admite hasta 150 caracteres.'
   return errors
 }
 
 export const playerRegistry = {
   async register(form) {
     const errors = validatePlayer(form)
-    if (form.name.trim().length > 100) errors.name = 'El nombre admite hasta 100 caracteres.'
-    if (form.gamertag.trim().length > 50) errors.gamertag = 'El gamertag admite hasta 50 caracteres.'
-    if (form.email.trim().length > 150) errors.email = 'El correo admite hasta 150 caracteres.'
     if (Object.keys(errors).length) return { errors }
     return registerPlayer(form)
+  },
+  async update(id, form) {
+    const errors = validatePlayer(form)
+    if (Object.keys(errors).length) return { errors }
+    await actualizarJugador(id, { nombre: form.name.trim(), gamertag: form.gamertag.trim(), correo: form.email.trim() })
+    return { player: { id, name: form.name.trim(), gamertag: form.gamertag.trim(), email: form.email.trim() } }
   },
 }
