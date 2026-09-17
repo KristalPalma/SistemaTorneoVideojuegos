@@ -1,13 +1,31 @@
-﻿import { useRef, useState } from 'react'
-import { matchingGenres } from './generos.js'
+import { useEffect, useRef, useState } from 'react'
+import { matchingGenres, searchText } from './generos.js'
 import './Videojuegos.css'
+import { loadGameCatalog } from './consultaVideojuegosService.js'
 
 export default function GeneroAutocomplete({ value, onChange, disabled, error }) {
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(-1)
   const listRef = useRef(null)
-  const matches = matchingGenres(value)
-  const expanded = open && !disabled
+  const [catalog, setCatalog] = useState({ loading: true, genres: [] })
+  const [retry, setRetry] = useState(0)
+  useEffect(() => {
+    const controller = new AbortController()
+    loadGameCatalog(undefined, controller.signal).then(games => {
+      if (controller.signal.aborted) return
+      const genres = new Map()
+      for (const game of games) {
+        const genre = game.genero.trim()
+        if (genre) genres.set(searchText(genre), genre)
+      }
+      setCatalog({ genres: [...genres.values()].sort((a, b) => a.localeCompare(b, 'es')) })
+    }).catch(() => {
+      if (!controller.signal.aborted) setCatalog({ genres: [], error: true })
+    })
+    return () => controller.abort()
+  }, [retry])
+  const matches = matchingGenres(value, catalog.genres)
+  const expanded = open && !disabled && Boolean(value.trim()) && !catalog.loading && !catalog.error
 
   function select(genre) {
     onChange(genre)
@@ -50,6 +68,11 @@ export default function GeneroAutocomplete({ value, onChange, disabled, error })
       </ul>
       {!matches.length && <p role="status">Sin coincidencias. Puedes conservar el género escrito.</p>}
     </div>}
+    {catalog.loading && <p className="player-help" role="status">Cargando los géneros registrados…</p>}
+    {catalog.error && <div role="alert"><p>No se pudieron consultar los géneros registrados.</p>
+      <button type="button" className="login-button" disabled={disabled} onClick={() => {
+        setCatalog({ loading: true, genres: [] }); setRetry(current => current + 1)
+      }}>Reintentar</button></div>}
     <p id="game-genre-help" className="player-help">Selecciona una sugerencia o escribe otro género.</p>
   </div>
 }

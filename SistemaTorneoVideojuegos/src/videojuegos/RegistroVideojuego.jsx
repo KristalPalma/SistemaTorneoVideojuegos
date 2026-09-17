@@ -65,7 +65,6 @@ export default function RegistroVideojuego({ game, onSuccess, onCancel }) {
           onChange={value => updateField({ target: { name: 'genre', value } })} />
         {errors.genre && <p className="player-field-error" id="game-genre-error">{errors.genre}</p>}
 
-        {!editing && <p className="player-help">El ID se asigna automáticamente al guardar.</p>}
         {notice && <div className={notice.type === 'error' ? 'auth-error' : 'player-success'}
           role={notice.type === 'error' ? 'alert' : 'status'}>
           <p>{notice.message}</p>
