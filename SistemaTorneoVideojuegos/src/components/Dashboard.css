@@ -1,0 +1,14 @@
+.dashboard-page { display: grid; gap: 28px; min-width: 0; }
+.dashboard-heading { padding: 8px 4px 0; }
+.dashboard-heading .eyebrow { color: #aa87df; font-size: 11px; letter-spacing: .16em; margin-bottom: 12px; }
+.dashboard-heading h1 { margin: 0 0 12px; font-size: clamp(26px, 3vw, 36px); letter-spacing: -.03em; }
+.dashboard-heading > p:last-child { color: #b6b3c8; line-height: 1.7; margin: 0; }
+.dashboard-page > .module-panel { margin: 0; width: 100%; box-sizing: border-box; min-width: 0; }
+.dashboard-page .statistics-page > .eyebrow { display: none; }
+.dashboard-page .statistics-page > h2 { margin: 0 0 12px; font-size: 22px; }
+.dashboard-page .statistics-filter { margin: 24px 0 28px; }
+.dashboard-page #recent-title { margin: 0 0 16px; font-size: 22px; }
+@media (max-width: 580px) {
+  .dashboard-page { gap: 22px; }
+  .dashboard-heading { padding: 4px 0; }
+}
