@@ -1,0 +1,13 @@
+﻿.score-registration { overflow-wrap: anywhere; }
+.score-registration select { width: 100%; min-width: 0; padding: 12px; font: inherit; font-size: 14px; color: #f4f3fa; background: #151f2c; border: 1px solid #303c50; border-radius: 6px; }
+.score-registration select[aria-invalid="true"] { border-color: #e17f97; }
+.score-registration select:focus-visible { outline: 2px solid #ac86ff; outline-offset: 4px; }
+.score-registration select:disabled { opacity: .65; }
+.score-registration > .player-help, .score-registration > .auth-error { margin-top: 20px; }
+@media(max-width: 580px) { .score-registration { padding: 20px; } }
+.score-search-option { position: relative; min-width: 0; }
+.score-suggestions { position: absolute; top: 100%; left: 0; right: 0; z-index: 5; margin-top: 5px; background: #172132; border: 1px solid #7852a8; border-radius: 8px; box-shadow: 0 12px 28px #0006; }
+.score-suggestions ul { max-height: 220px; overflow-y: auto; overscroll-behavior: contain; list-style: none; margin: 0; padding: 6px; }
+.score-suggestions li { padding: 12px; border-radius: 5px; color: #ede6f7; cursor: pointer; font-size: 14px; }
+.score-suggestions li:hover, .score-suggestions li[aria-selected="true"] { background: #7041b5; }
+.score-suggestions p { padding: 12px; color: #c0b3d2; font-size: 13px; }

@@ -1,4 +1,14 @@
 import { apiClient, ApiError } from './apiClient.js'
+import { validateId, validatePagination } from './validation.js'
+
+export async function obtenerPuntuacionesJugador(id, { page = 1, limit = 5 } = {}, client = apiClient) {
+  validateId(id)
+  validatePagination(page, limit)
+  const query = new URLSearchParams({ ID_jugador: String(id), page: String(page), limit: String(limit) })
+  const result = await client.request(`/puntuaciones?${query}`, { auth: '' })
+  if (!Array.isArray(result?.data)) throw new ApiError('No fue posible leer las puntuaciones.', 0, 'RESPONSE')
+  return result.data
+}
 
 // Crear una operacion por intencion. Reusar su submit() conserva clave, cuerpo y usuario.
 export function createScoreOperation(body, client = apiClient) {

@@ -27,7 +27,8 @@
 }
 
 .player-list li {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     justify-content: space-between;
     gap: 15px;
@@ -230,8 +231,20 @@
 
 .player-contact {
     font-size: 12px;
-    flex: 1;
+    display: grid;
+    gap: 12px;
 }
+
+.player-list li:has(.player-contact) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+    gap: 24px;
+}
+
+.player-list li > div { min-width: 0; }
+.player-list li > div:first-child strong { display: block; font-size: 14px; line-height: 1.5; }
+.player-list li > div:first-child p { font-size: 13px; line-height: 1.5; }
+.player-field-label { display: block; color: #897d9e; font-size: 10px; letter-spacing: .04em; }
+.player-contact p { margin-top: 3px; line-height: 1.5; }
 
 .player-management-panel {
     margin: 24px 0;
@@ -276,15 +289,20 @@
 
 @media(max-width: 1050px) {
     .player-list li:has(.player-contact) {
-        flex-wrap: wrap;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
     }
 
     .player-list li:has(.player-contact) .player-actions {
         width: 100%;
+        grid-column: 1 / -1;
     }
 }
 
 @media(max-width: 580px) {
+    .player-list li, .player-list li:has(.player-contact) {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
     .players-heading {
         flex-wrap: wrap;
     }
@@ -293,3 +311,14 @@
         padding: 18px;
     }
 }
+.player-score-history { margin-top: 20px; padding-top: 18px; border-top: 1px solid #373047; }
+.player-score-history h3 { font-size: 16px; margin: 0 0 14px; }
+.player-score-history > p { color: #afa5bf; font-size: 13px; line-height: 1.6; }
+.player-score-history ul { list-style: none; margin: 0; padding: 0; }
+.player-score-history li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #2c2a3c; }
+.player-score-history li strong { font-size: 13px; }
+.player-score-history li div small { display: block; color: #a99bbf; font-size: 11px; margin-top: 5px; }
+.player-score-value { flex-shrink: 0; color: #c8a3ff; font-weight: 700; font-size: 17px; }
+.player-score-value small { font-weight: 400; font-size: 11px; }
+.player-score-pagination { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 15px; font-size: 11px; }
+.player-score-pagination button { padding: 9px 12px; }

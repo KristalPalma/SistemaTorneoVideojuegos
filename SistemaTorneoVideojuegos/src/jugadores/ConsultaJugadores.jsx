@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { consultaService, formatPlayerDate } from './consultaService.js'
 import RegistroJugador from './RegistroJugador.jsx'
 import EliminarJugador from './EliminarJugador.jsx'
+import PuntuacionesJugador from './PuntuacionesJugador.jsx'
 import { canManagePlayers, queryAfterMutation } from './gestionJugadores.js'
 import './ConsultaJugadores.css'
 
@@ -50,7 +51,7 @@ function DetalleJugador({ id, onClose }) {
       <dt>Gamertag</dt><dd>{state.player.gamertag}</dd>
       <dt>Correo</dt><dd>{state.player.correo || 'No disponible'}</dd>
       <dt>Fecha de registro</dt><dd>{formatPlayerDate(state.player.fecha_registro)}</dd>
-    </dl></>}
+    </dl><PuntuacionesJugador key={id} id={id} /></>}
   </dialog>
 }
 
@@ -140,7 +141,10 @@ export default function ConsultaJugadores({ user }) {
     </div> : !state.data.length ? <p role="status">{query.buscar ? 'No se encontraron jugadores para esta búsqueda.' : query.page > 1 ? 'No hay más jugadores en esta página.' : 'No hay jugadores registrados.'}</p> :
       <ul className="player-list">{state.data.map(player => <li key={player.ID}>
         <div><strong>{player.nombre}</strong><p>{player.gamertag}</p></div>
-        {canManage && <div className="player-contact"><p>{player.correo || 'No disponible'}</p><p>{formatPlayerDate(player.fecha_registro)}</p></div>}
+        {canManage && <div className="player-contact">
+          <div><span className="player-field-label">Correo</span><p>{player.correo || 'No disponible'}</p></div>
+          <div><span className="player-field-label">Fecha de registro</span><p>{formatPlayerDate(player.fecha_registro)}</p></div>
+        </div>}
         <div className="player-actions">
           <button className="login-button" disabled={Boolean(panel)} aria-label={`Ver detalle de ${player.nombre}`} aria-haspopup="dialog" onClick={() => setSelected(player.ID)}>Ver detalle</button>
           {canManage && <>
