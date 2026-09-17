@@ -1,13 +1,17 @@
 import { useRef, useState } from 'react'
 import { playerRegistry } from './registroplayer'
 import './RegistroJugador.css'
+import { formatPlayerDate } from './consultaService.js'
 
 
 // Los campos se envian a la API 
 const emptyForm = { name: '', gamertag: '', email: '' }
 
-export default function RegistroJugador() {
-  const [form, setForm] = useState(emptyForm)
+export default function RegistroJugador({ player, onCancel, onSuccess }) {
+  const editing = Boolean(player)
+  const [form, setForm] = useState(() => player
+    ? { name: player.nombre, gamertag: player.gamertag, email: player.correo }
+    : emptyForm)
   const [errors, setErrors] = useState({})
   const [notice, setNotice] = useState(null)
   const [saving, setSaving] = useState(false)
@@ -28,15 +32,22 @@ export default function RegistroJugador() {
     setNotice(null)
     setErrors({})
     try {
-      const result = await playerRegistry.register(form)
+      const result = editing
+        ? await playerRegistry.update(player.ID, form)
+        : await playerRegistry.register(form)
       if (result.errors) {
         setErrors(result.errors)
         setNotice({ type: 'error', message: Object.values(result.errors).join(' ') })
         document.getElementById(`player-${Object.keys(result.errors)[0]}`)?.focus()
         return
       }
-      setForm(emptyForm)
-      setNotice({ type: 'success', message: `¡Jugador registrado! ${result.player.gamertag} se guardó correctamente.`, player: result.player })
+      if (onSuccess) {
+        onSuccess({ ID: result.player.id, nombre: result.player.name, gamertag: result.player.gamertag,
+          correo: result.player.email, fecha_registro: result.player.registeredAt ?? player?.fecha_registro })
+        return
+      }
+      if (!editing) setForm(emptyForm)
+      setNotice({ type: 'success', message: `¡Jugador ${editing ? 'actualizado' : 'registrado'}! ${result.player.gamertag} se guardó correctamente.`, player: result.player })
     } catch (error) {
       setNotice({ type: 'error', message: error.message || 'No se pudo completar el registro.' })
     } finally {
@@ -47,9 +58,9 @@ export default function RegistroJugador() {
 
   return (
     <section className="module-panel player-registration" aria-labelledby="player-title">
-      <p className="eyebrow">REGISTRO DE JUGADORES</p>
-      <h1 id="player-title">Registrar jugador</h1>
-      <p>Completa la información del nuevo jugador. Los campos con * son obligatorios.</p>
+      <p className="eyebrow">{editing ? 'EDICIÓN DE JUGADOR' : 'REGISTRO DE JUGADORES'}</p>
+      <h1 id="player-title">{editing ? 'Editar jugador' : 'Registrar jugador'}</h1>
+      <p>{editing ? `Actualiza los datos de ${player.gamertag}.` : 'Completa la información del nuevo jugador.'} Los campos con * son obligatorios.</p>
       <form onSubmit={submit} noValidate aria-busy={saving}>
         <label htmlFor="player-name">Nombre *</label>
         <input id="player-name" name="name" autoComplete="name" value={form.name}
@@ -70,18 +81,18 @@ export default function RegistroJugador() {
         {errors.email && <p className="player-field-error" id="player-email-error">{errors.email}</p>}
 
         <label htmlFor="player-date">Fecha de registro</label>
-        <input id="player-date" value={new Date().toLocaleDateString('es-MX')} readOnly aria-describedby="player-date-help" />
-        <p id="player-date-help" className="player-help">La fecha definitiva y el ID los asigna el servidor al guardar.</p>
+        <input id="player-date" value={editing ? formatPlayerDate(player.fecha_registro) : new Date().toLocaleDateString('es-MX')} readOnly aria-describedby="player-date-help" />
 
         {notice && <div className={notice.type === 'error' ? 'auth-error' : 'player-success'}
           role={notice.type === 'error' ? 'alert' : 'status'}>
           <p>{notice.message}</p>
           {notice.player && <>
             <p>ID: {notice.player.id}</p>
-            <p>Fecha de registro: {new Date(notice.player.registeredAt).toLocaleString('es-MX')}</p>
+            <p>Fecha de registro: {formatPlayerDate(notice.player.registeredAt ?? player?.fecha_registro)}</p>
           </>}
         </div>}
-        <button className="auth-primary" type="submit" disabled={saving}>{saving ? 'Guardando…' : 'Guardar jugador'}</button>
+        <button className="auth-primary" type="submit" disabled={saving}>{saving ? 'Guardando…' : editing ? 'Guardar cambios' : 'Guardar jugador'}</button>
+        {onCancel && <button className="login-button" type="button" disabled={saving} onClick={onCancel}>Cancelar</button>}
       </form>
     </section>
   )
