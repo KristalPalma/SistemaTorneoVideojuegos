@@ -12,6 +12,7 @@ import ConsultaVideojuegos from './videojuegos/ConsultaVideojuegos.jsx'
 import ConsultaPuntuaciones from './puntuaciones/ConsultaPuntuaciones.jsx'
 import Estadisticas from './estadisticas/Estadisticas.jsx'
 import Dashboard from './components/Dashboard.jsx'
+import Clasificacion from './clasificacion/Clasificacion.jsx'
 
 function App() {
   const { user, login, logout } = useSession()
@@ -57,6 +58,7 @@ function App() {
             <h1>Página no encontrada</h1><p>La dirección solicitada no existe.</p>
             <a className="back-link" href={`#${dashboardPath(user)}`}>Volver al inicio →</a>
           </section> : route.login ? <Login onLogin={handleLogin} /> : route.home ? <Home /> :
+            route.path === '/clasificacion' ? <Clasificacion /> :
             route.dashboard ? <Dashboard key={user.id} user={user} /> :
             route.path === '/jugadores' && user?.role === 'Administrador' ? <Redirect to="/admin/jugadores" /> :
             (route.path === '/jugadores' || route.path === '/admin/jugadores') ? <ConsultaJugadores key={user?.role || 'publico'} user={user} /> :

@@ -1,0 +1,17 @@
+.ranking-page { min-width: 0; }
+.ranking-filter { display: flex; align-items: end; flex-wrap: wrap; gap: 16px; margin: 28px 0; }
+.ranking-filter > div { flex: 1; max-width: 460px; min-width: 180px; }
+.ranking-filter label { display: block; font-size: 13px; margin-bottom: 9px; color: #cbbfde; }
+.ranking-page h2 { margin: 20px 0 10px; }
+.ranking-help, .ranking-empty { color: #aaa4bf; line-height: 1.7; margin: 16px 0; }
+.ranking-scroll { overflow-x: auto; margin-top: 24px; }
+.ranking-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+.ranking-table th { background: #151f2c; color: #c6b5df; padding: 16px; }
+.ranking-table td { padding: 18px 16px; border-bottom: 1px solid #303c50; overflow-wrap: anywhere; }
+.ranking-place { font-weight: 700; white-space: nowrap; }
+.place-1 { color: #f8ce68; }.place-2 { color: #d4deed; }.place-3 { color: #e8af82; }
+.ranking-score { color: #c8a3ff; font-weight: 700; font-variant-numeric: tabular-nums; }
+.ranking-score small { font-size: 10px; }
+.ranking-pagination { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 24px; }
+.ranking-page button:disabled { opacity: .5; cursor: default; }
+@media(max-width: 580px) { .ranking-table { font-size: 12px; } .ranking-table th, .ranking-table td { padding: 12px 6px; } .ranking-filter > div { max-width: none; } }

@@ -10,12 +10,10 @@ export const routes = [
   { path: '/admin/jugadores', label: 'Registrar jugadores', role: 'Administrador' },
   { path: '/admin/puntuaciones', label: 'Puntuaciones', role: 'Administrador' },
   { path: '/superadmin/puntuaciones', label: 'Puntuaciones', role: 'Superadministrador' },
-  { path: '/admin/clasificacion', label: 'Clasificación', role: 'Administrador' },
   { path: '/admin/estadisticas', label: 'Estadísticas', role: 'Administrador' },
   { path: '/superadmin', label: 'Inicio', title: 'Dashboard Superadmin', role: 'Superadministrador', dashboard: true },
   { path: '/superadmin/administradores', label: 'Agregar administradores', role: 'Superadministrador' },
   { path: '/superadmin/videojuegos/gestion', label: 'Videojuegos', role: 'Superadministrador' },
-  { path: '/superadmin/clasificacion', label: 'Clasificación', role: 'Superadministrador' },
   { path: '/superadmin/estadisticas', label: 'Estadísticas', role: 'Superadministrador' },
 ]
 
@@ -25,6 +23,7 @@ export function dashboardPath(user) {
 
 export function navigationFor(user) {
   const items = routes.filter(route => user ? route.role === user.role : !route.role && !route.login)
+  if (user?.role === 'Administrador') items.push(routes.find(route => route.path === '/clasificacion'))
   if (user?.role === 'Superadministrador') items.push(routes.find(route => route.path === '/jugadores'))
   return items.sort((a, b) => Number(Boolean(b.dashboard || b.home)) - Number(Boolean(a.dashboard || a.home)))
 }
