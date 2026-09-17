@@ -12,7 +12,7 @@ export const routes = [
   { path: '/superadmin/puntuaciones', label: 'Puntuaciones', role: 'Superadministrador' },
   { path: '/admin/estadisticas', label: 'Estadísticas', role: 'Administrador' },
   { path: '/superadmin', label: 'Inicio', title: 'Dashboard Superadmin', role: 'Superadministrador', dashboard: true },
-  { path: '/superadmin/administradores', label: 'Agregar administradores', role: 'Superadministrador' },
+  { path: '/superadmin/administradores', label: 'Administradores', role: 'Superadministrador' },
   { path: '/superadmin/videojuegos/gestion', label: 'Videojuegos', role: 'Superadministrador' },
   { path: '/superadmin/estadisticas', label: 'Estadísticas', role: 'Superadministrador' },
 ]
