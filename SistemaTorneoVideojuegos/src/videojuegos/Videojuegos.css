@@ -1,0 +1,37 @@
+﻿.game-consultation { overflow-wrap: anywhere; }
+.games-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.games-heading > button { flex-shrink: 0; }
+.game-search { display: flex; flex-wrap: wrap; gap: 12px; margin: 25px 0; }
+.game-search label { width: 100%; font-size: 13px; }
+.game-search input { flex: 1; min-width: 160px; padding: 12px; color: #f4f3fa; background: #151f2c; border: 1px solid #303c50; border-radius: 6px; font: inherit; }
+.game-list { list-style: none; padding: 0; margin: 20px 0; }
+.game-list li { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 20px 16px; border-bottom: 1px solid #303c50; }
+.game-list-info { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-width: 0; }
+.game-list-info strong { font-size: 16px; }
+.game-genre { color: #cbb4f0; background: #7041b51a; border: 1px solid #6c4b923d; padding: 5px 10px; border-radius: 6px; font-size: 12px; }
+.game-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; flex-shrink: 0; }
+.game-actions .game-delete { background: #66263d; border-color: #9e4b69; color: #ffe2eb; }
+.game-pagination { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 25px; }
+.games-feedback { padding: 14px; margin: 20px 0; border-radius: 8px; background: #143128; border: 1px solid #39705b; color: #b1ecd2; }
+.game-delete-panel { padding: 24px; margin: 24px 0; border: 1px solid #794153; background: #211622; border-radius: 10px; }
+.game-delete-panel h2 { margin-bottom: 14px; font-size: 21px; }
+.game-delete-panel p { line-height: 1.7; margin-bottom: 18px; }
+.game-consultation button:disabled { opacity: .5; cursor: default; }
+.genre-autocomplete { position: relative; }
+.genre-autocomplete > .player-help { margin-top: 8px; }
+.genre-suggestions { position: absolute; top: 46px; left: 0; right: 0; z-index: 5; background: #172132; border: 1px solid #7852a8; border-radius: 8px; box-shadow: 0 12px 28px #0006; overflow: hidden; }
+.genre-suggestions ul { max-height: 210px; overflow-y: auto; overscroll-behavior: contain; list-style: none; margin: 0; padding: 6px; }
+.genre-suggestions li { padding: 11px 12px; border-radius: 5px; font-size: 14px; color: #ede6f7; cursor: pointer; }
+.genre-suggestions li:hover, .genre-suggestions li[aria-selected="true"] { background: #7041b5; color: white; }
+.genre-suggestions p { padding: 12px; font-size: 12px; color: #c0b3d2; }
+@media(max-width: 580px) {
+  .games-heading { flex-wrap: wrap; }
+  .game-search input { width: 100%; flex-basis: 100%; min-width: 0; }
+  .game-list li { align-items: flex-start; flex-direction: column; padding: 18px 0; }
+  .game-pagination { gap: 8px; font-size: 12px; }
+  .game-delete-panel { padding: 18px; }
+  .genre-suggestions ul { max-height: 170px; }
+}
+
+.game-registration form > .auth-primary,
+.game-registration form > .login-button { font-size: 16px; }

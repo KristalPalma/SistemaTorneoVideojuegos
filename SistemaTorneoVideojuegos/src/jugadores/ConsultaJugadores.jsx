@@ -65,6 +65,17 @@ export default function ConsultaJugadores({ user }) {
   const [state, setState] = useState({ loading: true, data: [] })
   const [selected, setSelected] = useState(null)
   useEffect(() => {
+    const buscar = text.trim()
+    if (panel || buscar === query.buscar) return
+    const timer = setTimeout(() => {
+      setSelected(null)
+      setState({ loading: true, data: [] })
+      setQuery(current => ({ ...current, buscar, page: 1 }))
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [text, query.buscar, panel])
+
+  useEffect(() => {
     let active = true
     consultaService.list(query).then(result => { if (active) setState({ data: result.data }) })
       .catch(error => { if (active) setState({ data: [], error: error.message }) })

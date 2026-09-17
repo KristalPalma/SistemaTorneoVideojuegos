@@ -1,4 +1,4 @@
-import { registerGame } from '../api/videojuegosApi.js'
+import { actualizarVideojuego, registerGame } from '../api/videojuegosApi.js'
 export function validateGame(form, games = []) {
   const errors = {}
   const name = form.name.trim()
@@ -32,6 +32,17 @@ function hasControlCharacters(value) {
 }
 
 export const gameRegistry = {
+  async update(id, form) {
+    const errors = validateGame(form)
+    if (Object.keys(errors).length) return { errors }
+    try {
+      await actualizarVideojuego(id, { nombre: form.name.trim(), genero: form.genre.trim() })
+      return { game: { id, name: form.name.trim(), genre: form.genre.trim() } }
+    } catch (error) {
+      if (error.status === 409) return { errors: { name: 'Este nombre de videojuego ya está registrado.' } }
+      throw error
+    }
+  },
   async register(form) {
     const errors = validateGame(form)
     if (Object.keys(errors).length) return { errors }

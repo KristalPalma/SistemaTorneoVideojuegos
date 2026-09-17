@@ -8,6 +8,7 @@ import { navigate, useHashPath } from './auth/navigation'
 import Redirect from './auth/Redirect'
 import RegistroVideojuego from './videojuegos/RegistroVideojuego.jsx'
 import ConsultaJugadores from './jugadores/ConsultaJugadores.jsx'
+import ConsultaVideojuegos from './videojuegos/ConsultaVideojuegos.jsx'
 
 function App() {
   const { user, login, logout } = useSession()
@@ -57,6 +58,7 @@ function App() {
             route.path === '/jugadores' && user?.role === 'Administrador' ? <Redirect to="/admin/jugadores" /> :
             (route.path === '/jugadores' || route.path === '/admin/jugadores') ? <ConsultaJugadores key={user?.role || 'publico'} user={user} /> :
             route.path === '/superadmin/videojuegos' ? <RegistroVideojuego /> :
+            (route.path === '/videojuegos' || route.path === '/superadmin/videojuegos/gestion') ? <ConsultaVideojuegos key={user?.role || 'publico'} user={user} /> :
             <section className="module-panel" aria-labelledby="page-title">
               <p className="eyebrow">{route.role ? 'PANEL DE ADMINISTRACIÓN' : 'TORNEO GAMER'}</p>
               <h1 id="page-title">{route.title || route.label}</h1>

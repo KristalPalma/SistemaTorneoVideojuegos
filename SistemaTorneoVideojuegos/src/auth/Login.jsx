@@ -55,8 +55,6 @@ export default function Login({ onLogin }) {
         {error && <p className="auth-error" role="alert">{error}</p>}
         <button className="auth-primary" type="submit" disabled={saving}>{saving ? 'Iniciando sesión…' : 'Iniciar sesión'}</button>
       </form>
-      <a className="back-link" href="#/">← Volver al inicio</a>
-      <p className="demo-note">Usa tu cuenta real del servidor. Al recargar tendrás que iniciar sesión nuevamente.</p>
     </section>
   )
 }
