@@ -16,10 +16,12 @@ export function basicAuthorization(email, password) {
 export function createApiClient({ baseUrl, fetchImpl = globalThis.fetch } = {}) {
   // Las credenciales solo viven en memoria, nunca en storage ni en variables VITE.
   let authorization = ''
+  let authorizationVersion = 0
   return {
-    setAuthorization(value) { authorization = value },
-    clearAuthorization() { authorization = '' },
+    setAuthorization(value) { authorization = value; authorizationVersion++ },
+    clearAuthorization() { authorization = ''; authorizationVersion++ },
     getAuthorization() { return authorization },
+    getAuthorizationVersion() { return authorizationVersion },
     async request(path, { method = 'GET', body, auth, idempotencyKey, signal } = {}) {
       if (!baseUrl?.trim()) throw new ApiError('Falta configurar VITE_API_URL. Solicita la URL al equipo de backend.', 0, 'CONFIG')
       let url

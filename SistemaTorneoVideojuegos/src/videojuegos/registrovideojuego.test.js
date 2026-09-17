@@ -11,6 +11,6 @@ test('RF02 valida campos y limites antes de enviar', () => {
 })
 test('solo Superadmin accede al formulario', () => {
   assert.equal(resolveRoute('/superadmin/videojuegos', null).redirect, '/login')
-  assert.equal(resolveRoute('/superadmin/videojuegos', { role: 'admin' }).redirect, '/admin')
-  assert.ok(resolveRoute('/superadmin/videojuegos', { role: 'superadmin' }).route)
+  assert.equal(resolveRoute('/superadmin/videojuegos', { role: 'Administrador' }).redirect, '/admin')
+  assert.ok(resolveRoute('/superadmin/videojuegos', { role: 'Superadministrador' }).route)
 })

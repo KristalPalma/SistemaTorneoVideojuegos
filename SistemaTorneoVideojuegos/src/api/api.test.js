@@ -1,4 +1,4 @@
-﻿import test from 'node:test'
+import test from 'node:test'
 import assert from 'node:assert/strict'
 import { createApiClient } from './apiClient.js'
 import { registerGame } from './videojuegosApi.js'
@@ -12,7 +12,7 @@ test('login real consulta auth/me y conserva Basic solo tras validar el rol', as
     assert.ok(options.headers.Authorization.startsWith('Basic '))
     return reply({ id: 1, nombre: 'Ana', correo: 'ana@example.test', rol: 'Superadministrador' })
   } })
-  assert.equal((await loginApi('ana@example.test', 'test-password', client)).role, 'superadmin')
+  assert.equal((await loginApi('ana@example.test', 'test-password', client)).role, 'Superadministrador')
   assert.ok(client.getAuthorization())
   client.clearAuthorization()
   assert.equal(client.getAuthorization(), '')
@@ -80,3 +80,38 @@ test('idempotencia mantiene clave y cuerpo al reintentar y bloquea cambio de usu
   auth = ''
   await assert.rejects(operation.submit(), /sesión/)
 })
+
+for (const [role, register, form, path, body, data] of [
+  ['Administrador', registerPlayer, { name: ' Prueba ', gamertag: ' Test ', email: 'player@example.test' }, '/jugadores',
+    { nombre: 'Prueba', gamertag: 'Test', correo: 'player@example.test' },
+    { ID: 9, nombre: 'Prueba', gamertag: 'Test', correo: 'player@example.test', fecha_registro: '2026-09-16' }],
+  ['Superadministrador', registerGame, { name: ' Juego ', genre: ' Lucha ' }, '/videojuegos',
+    { nombre: 'Juego', genero: 'Lucha' }, { ID: 9, nombre: 'Juego', genero: 'Lucha' }],
+]) {
+  test(`login ${role} comparte Basic con el registro correspondiente`, async () => {
+    let credential
+    let posts = 0
+    const client = createApiClient({ baseUrl: 'https://api.example.test/api', fetchImpl: async (url, options) => {
+      if (url.endsWith('/auth/me')) {
+        credential = options.headers.Authorization
+        assert.equal(Buffer.from(credential.slice(6), 'base64').toString('utf8'), 'test@example.test:clave:con:acentos-á')
+        assert.equal(options.credentials, 'omit')
+        return reply({ id: 1, nombre: 'Prueba', correo: 'test@example.test', rol: role })
+      }
+      if (options.method === 'GET') {
+        assert.equal(options.headers.Authorization, undefined)
+        return reply([])
+      }
+      posts++
+      assert.ok(url.endsWith(path))
+      assert.equal(options.method, 'POST')
+      assert.equal(options.headers.Authorization, credential)
+      assert.deepEqual(JSON.parse(options.body), body)
+      return reply(data, 201)
+    } })
+    const user = await loginApi(' TEST@example.test ', 'clave:con:acentos-á', client)
+    assert.equal(user.role, role)
+    await register(form, client)
+    assert.equal(posts, 1)
+  })
+}
